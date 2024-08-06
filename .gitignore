@@ -1,0 +1,10 @@
+.DS_Store
+__pycache__
+*.ipynb
+*.txt
+*.pkl
+
+game.py
+team.py
+perso.py
+utils.py
