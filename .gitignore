@@ -1,9 +1,11 @@
 .DS_Store
 __pycache__
 *.ipynb
-*.pkl
 
+save.pkl
+results.pkl
 results.txt
+results
 
 data/ratios.json
 
