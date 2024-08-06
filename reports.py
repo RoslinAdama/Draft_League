@@ -1,10 +1,9 @@
 import streamlit as st
 import altair as alt
 import pickle
-import pdb
+import os
 import numpy as np
 import pandas as pd
-from time import sleep
 
 from random import randint
 
@@ -194,41 +193,41 @@ class Report():
 
 
 
-    def page_resume(self):
-        degats = self.results["degats"]
-        degats_par_perso = {}
-        for perso in degats[0].keys():
-            degats_par_perso[perso] = 0
+    # def page_resume(self):
+    #     degats = self.results["degats"]
+    #     degats_par_perso = {}
+    #     for perso in degats[0].keys():
+    #         degats_par_perso[perso] = 0
 
-        for fight in range(3):
-            for pers in degats[fight].keys():
-                degats_par_perso[pers] += degats[fight][pers]
+    #     for fight in range(3):
+    #         for pers in degats[fight].keys():
+    #             degats_par_perso[pers] += degats[fight][pers]
 
-        st.write(degats_par_perso)
-        degats = degats_par_perso.copy()
+    #     st.write(degats_par_perso)
+    #     degats = degats_par_perso.copy()
 
-        damage_data = pd.DataFrame({"noms" : list(degats.keys())  , "damage" : list(degats.values()) , "color" : ["Blue" , "Blue" , "Blue" , "Red" , "Red" , "Red"]})
+    #     damage_data = pd.DataFrame({"noms" : list(degats.keys())  , "damage" : list(degats.values()) , "color" : ["Blue" , "Blue" , "Blue" , "Red" , "Red" , "Red"]})
 
-        chart_df = alt.Chart(damage_data).mark_bar().encode(x=alt.X("noms" , sort=None) , y=alt.Y("damage" , sort=None) , color="color")
-        st.altair_chart(chart_df)
+    #     chart_df = alt.Chart(damage_data).mark_bar().encode(x=alt.X("noms" , sort=None) , y=alt.Y("damage" , sort=None) , color="color")
+    #     st.altair_chart(chart_df)
 
 
-        tankes = self.results["tanke"]
-        tanks_par_perso = {}
-        for perso in tankes[0].keys():
-            tanks_par_perso[perso] = 0
+    #     tankes = self.results["tanke"]
+    #     tanks_par_perso = {}
+    #     for perso in tankes[0].keys():
+    #         tanks_par_perso[perso] = 0
 
-        for fight in range(3):
-            for pers in tankes[fight].keys():
-                tanks_par_perso[pers] += tankes[fight][pers]
+    #     for fight in range(3):
+    #         for pers in tankes[fight].keys():
+    #             tanks_par_perso[pers] += tankes[fight][pers]
 
-        st.write(tanks_par_perso)
-        tankes = tanks_par_perso.copy()
+    #     st.write(tanks_par_perso)
+    #     tankes = tanks_par_perso.copy()
 
-        tankes_data = pd.DataFrame({"noms" : list(tankes.keys())  , "tankes" : list(tankes.values()) , "color" : ["Blue" , "Blue" , "Blue" , "Red" , "Red" , "Red"]})
+    #     tankes_data = pd.DataFrame({"noms" : list(tankes.keys())  , "tankes" : list(tankes.values()) , "color" : ["Blue" , "Blue" , "Blue" , "Red" , "Red" , "Red"]})
 
-        chart_df = alt.Chart(tankes_data).mark_bar().encode(x=alt.X("noms" , sort=None) , y=alt.Y("tankes" , sort=None) , color="color")
-        st.altair_chart(chart_df)
+    #     chart_df = alt.Chart(tankes_data).mark_bar().encode(x=alt.X("noms" , sort=None) , y=alt.Y("tankes" , sort=None) , color="color")
+    #     st.altair_chart(chart_df)
 
 
     def simulation_game(self , num_fight):
@@ -252,7 +251,7 @@ class Report():
                     st.subheader(lvls[0+b])
                     try:
                         st.image("data/images/"+blue_champ+".webp" , use_column_width=True)
-                    except:
+                    except Exception:
                         st.image("data/images/"+blue_champ+".jpg" , use_column_width=True)
                     
 
@@ -266,7 +265,7 @@ class Report():
                     else:
                         try:
                             st.image("data/images/"+blue_champ+".webp" , use_column_width=True)
-                        except:
+                        except Exception:
                             st.image("data/images/"+blue_champ+".jpg" , use_column_width=True)
 
 
@@ -472,7 +471,7 @@ class Report():
                     st.subheader(lvls[3+r])
                     try:
                         st.image("data/images/"+red_champ+".webp" , use_column_width=True)
-                    except:
+                    except Exception:
                         st.image("data/images/"+red_champ+".jpg" , use_column_width=True)
                     
 
@@ -486,15 +485,15 @@ class Report():
                     else:
                         try:
                             st.image("data/images/"+red_champ+".webp" , use_column_width=True)
-                        except:
+                        except Exception:
                             st.image("data/images/"+red_champ+".jpg" , use_column_width=True)
 
 
         
 @st.cache_data
-def get_data():
+def get_data(path):
 
-    with open("results.pkl" , 'rb') as rf:
+    with open(path , 'rb') as rf:
         results = pickle.load(rf)
 
     return Report(results)
@@ -502,31 +501,46 @@ def get_data():
 
 def main():
     
-    report = get_data()
-
     if "state_drake" not in st.session_state.keys():
         st.session_state.state_drake = -1
     if "state_baron" not in st.session_state.keys():
         st.session_state.state_baron = -1
     if "state_ancestral" not in st.session_state.keys():
         st.session_state.state_ancestral = -1
+    if "match_selected" not in st.session_state.keys():
+        st.session_state.match_selected = False
 
-    tab1 , tab2 , tab3, tab4, tab5 = st.tabs(["Fights" , "Résumé" , "Fight drake" , "Fight baron" , "Fight Ancestral"])
+    if st.session_state.match_selected:
 
-    with tab1:
-        report.page_fights()
+        tab1 , tab2 , tab3, tab4, tab5 = st.tabs(["Choix match" , "Résumé" , "Fight drake" , "Fight baron" , "Fight Ancestral"])
 
-    with tab2:
-        report.page_resume()
+        with tab1:
+            match_files = os.listdir("matchs")
+            choix_match = st.selectbox(label="Choix du match" , options=match_files)
+            report = get_data(path = "matchs/"+choix_match)
 
-    with tab3:
-        report.simulation_game(num_fight=0)
+        with tab2:
+            # report.page_resume()
+            report.page_fights()
 
-    with tab4:
-        report.simulation_game(num_fight=1)
 
-    with tab5:
-        report.simulation_game(num_fight=2)
+        with tab3:
+            report.simulation_game(num_fight=0)
+
+        with tab4:
+            report.simulation_game(num_fight=1)
+
+        with tab5:
+            report.simulation_game(num_fight=2)
+
+    else:
+        match_files = os.listdir("matchs")
+        choix_match = st.selectbox(label="Choix du match" , options=match_files)
+
+        if st.button("Valider choix match" , key=2000):
+            report = get_data(path = "matchs/"+choix_match)
+            st.session_state.match_selected = True
+            st.rerun()
 
     
 
