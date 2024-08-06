@@ -4,6 +4,8 @@ __pycache__
 *.txt
 *.pkl
 
+data/ratios.json
+
 game.py
 team.py
 perso.py
