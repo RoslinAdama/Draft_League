@@ -2,10 +2,7 @@ import streamlit as st
 import altair as alt
 import pickle
 import os
-import numpy as np
 import pandas as pd
-
-from random import randint
 
 
 st.set_page_config(layout="wide")
@@ -83,9 +80,9 @@ class Report:
         st.header("Drake")
 
         if self.results["drake"] == "Blue":
-            st.subheader(f""":blue[Blue]""")
+            st.subheader(""":blue[Blue]""")
         else:
-            st.subheader(f""":red[Red]""")
+            st.subheader(""":red[Red]""")
 
         degats = self.results["degats"][0]
         damage_data = pd.DataFrame(
@@ -150,9 +147,9 @@ class Report:
     def baron(self):
         st.header("Baron")
         if self.results["baron"] == "Blue":
-            st.subheader(f""":blue[Blue]""")
+            st.subheader(""":blue[Blue]""")
         else:
-            st.subheader(f""":red[Red]""")
+            st.subheader(""":red[Red]""")
 
         st.text("Dégâts infligés")
         degats = self.results["degats"][1]
@@ -217,9 +214,9 @@ class Report:
     def ancestral(self):
         st.header("Victoire")
         if self.results["victoire"] == "Blue":
-            st.subheader(f""":blue[Blue]""")
+            st.subheader(""":blue[Blue]""")
         else:
-            st.subheader(f""":red[Red]""")
+            st.subheader(""":red[Red]""")
 
         st.text("Dégâts infligés")
         degats = self.results["degats"][2]
@@ -508,7 +505,7 @@ class Report:
                                 try:
                                     nom_image = f"data/images/{perso}.webp"
                                     st.image(nom_image.format(perso), width=100)
-                                except Exception as E:
+                                except Exception:
                                     nom_image = f"data/images/{perso}.jpg"
                                     st.image(nom_image.format(perso), width=100)
 
