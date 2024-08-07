@@ -353,19 +353,26 @@ class Report:
                 for b, blue_champ in enumerate(self.results["blue_team"]):
                     st.subheader(lvls[0 + b])
                     try:
-                        st.image(
-                            "data/images/" + blue_champ + ".webp", use_column_width=True
+                        # get the directory of the image
+                        base_path = os.path.dirname(__file__)
+                        blue_champ = blue_champ.lower()
+                        image_path = os.path.join(
+                            base_path, "data/images/" + blue_champ + ".webp"
                         )
+                        st.image(image_path, use_column_width=True)
                     except Exception:
-                        st.image(
-                            "data/images/" + blue_champ + ".jpg", use_column_width=True
+                        base_path = os.path.dirname(__file__)
+                        blue_champ = blue_champ.lower()
+                        image_path = os.path.join(
+                            base_path, "data/images/" + blue_champ + ".jpg"
                         )
+                        st.image(image_path, use_column_width=True)
 
             else:
                 distances = stats[num_tour]["positions"]
                 for b, blue_champ in enumerate(self.results["blue_team"]):
                     st.subheader(lvls[0 + b])
-
+                    blue_champ = blue_champ.lower()
                     if distances[b] is None:
                         st.image(
                             "data/images/dead/" + blue_champ + ".jpg",
@@ -501,6 +508,7 @@ class Report:
                         pos_cols = st.columns(nb_persos)
 
                         for p, perso in enumerate(case):
+                            perso = perso.lower()
                             with pos_cols[p]:
                                 try:
                                     nom_image = f"data/images/{perso}.webp"
@@ -571,6 +579,7 @@ class Report:
             if num_tour < tour_engage:
 
                 for r, red_champ in enumerate(self.results["red_team"]):
+                    red_champ = red_champ.lower()
                     st.subheader(lvls[3 + r])
                     try:
                         st.image(
@@ -585,7 +594,7 @@ class Report:
                 distances = stats[num_tour]["positions"]
                 for r, red_champ in enumerate(self.results["red_team"]):
                     st.subheader(lvls[3 + r])
-
+                    red_champ = red_champ.lower()
                     if distances[r + 3] is None:
                         st.image(
                             "data/images/dead/" + red_champ + ".jpg",
